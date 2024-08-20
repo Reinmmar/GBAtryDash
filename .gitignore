@@ -1,3 +1,5 @@
 *.gba
 *.elf
+*.sav
 build/
+.vscode/
