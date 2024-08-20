@@ -1,0 +1,2 @@
+detailed_block_corner_inverted_bn_gfx.o: \
+ detailed_block_corner_inverted_bn_gfx.s
