@@ -1,0 +1,1 @@
+detailed_block_end_rotated_bn_gfx.o: detailed_block_end_rotated_bn_gfx.s

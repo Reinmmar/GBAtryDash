@@ -1,0 +1,1 @@
+detailed_block_center_bn_gfx.o: detailed_block_center_bn_gfx.s
