@@ -1,1 +1,0 @@
-deco_stick_large_bn_gfx.o: deco_stick_large_bn_gfx.s
