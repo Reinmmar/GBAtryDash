@@ -1,1 +1,0 @@
-detailed_block_corner_bn_gfx.o: detailed_block_corner_bn_gfx.s

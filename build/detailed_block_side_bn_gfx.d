@@ -1,1 +1,0 @@
-detailed_block_side_bn_gfx.o: detailed_block_side_bn_gfx.s
