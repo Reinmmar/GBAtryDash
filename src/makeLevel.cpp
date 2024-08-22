@@ -4,10 +4,70 @@ bn::vector<LevelData, 200> data;
 int partToLoad = 0;
 bool loadNextPart = true;
 
-void placeObject(int id, bn::fixed x, bn::fixed y, bool flipX, bool flipY,
-                 int rot) {
-  LevelData g(id, x, y, flipX, flipY, rot);
-  data.push_back(g);
+void placeObject(int id, bn::fixed x, bn::fixed y, bool flipX, bool flipY, int rot) {
+  int up = 0;
+  int right = 0;
+  int down = 0;
+  int left = 0;
+
+  switch (id) {
+    case BLOCK:
+    case DETAILED_BLOCK_PILLAR:
+    case DETAILED_BLOCK_SIDE:
+    case DETAILED_BLOCK_CORNER:
+    case DETAILED_BLOCK_CORNER_INVERTED:
+    case DETAILED_BLOCK_END:
+      up = 8;
+      right = 8;
+      down = 8;
+      left = 8;
+      break;
+    case HALF_BLOCK:
+      up = 8;
+      right = 8;
+      left = 8;
+      break;
+    case DETAILED_BLOCK_PILLAR_TRIPLE:
+      up = 24;
+      right = 8;
+      down = 24;
+      left = 8;
+      break;
+    case DETAILED_BLOCK_PILLAR_TRIPLE_ROTATED:
+      up = 8;
+      right = 24;
+      down = 8;
+      left = 24;
+      break;
+    case SPIKE:
+      up = 3;
+      right = 2;
+      down = 4;
+      left = 2;
+      break;
+    case SPIKE_SHORT:
+      up = -2;
+      right = 2;
+      down = 5;
+      left = 2;
+      break;
+    case GROUND_SPIKES:
+      up = -4;
+      right = 2;
+      down = 8;
+      left = 2;
+      break;
+    case SHIP_PORTAL:
+    case CUBE_PORTAL:
+      up = 16;
+      right = 8;
+      down = 16;
+      left = 10;
+      break;
+    default:
+      break;
+  }
+  data.push_back(*new LevelData(id, x, y, rot, flipX, flipY, up, right, down, left));
 }
 void makeLevel1() {
   placeObject(SPIKE, 17, 0);
@@ -417,12 +477,12 @@ void makeLevel5() {
 
   for (int i = 0; i < 19; i++) {
     switch (i) {
-    case 3:
-    case 7:
-    case 11:
-      continue;
-    default:
-      break;
+      case 3:
+      case 7:
+      case 11:
+        continue;
+      default:
+        break;
     }
     placeObject(GROUND_SPIKES, 589 + i, 0);
   }
@@ -609,4 +669,4 @@ FunctionArray makeLevelList[] = {
     makeLevel1,  makeLevel2,    makeLevel2_1, makeLevel3,
     makeLevel4,  makeLevel5,    makeLevel6,   makeLevel7,
     makeLevel8,  makeLevel8_1,  makeLevel9,   makeLevel10,
-    makeLevel11, makeLevel11_1, makeLevel12,  NULL};
+    makeLevel11, makeLevel11_1, makeLevel12,  NULL };

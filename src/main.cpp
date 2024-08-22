@@ -35,7 +35,7 @@ void moveGround() {
 void makeGround() {
   for (int i = 0; i < 5; i++) {
     ground.emplace_back(bn::sprite_items::gnd_square.create_sprite(
-        -240 / 2 + 32 + i * 64, 160 / 2));
+      -240 / 2 + 32 + i * 64, 160 / 2));
     ground[ground.size() - 1].set_z_order(-2);
   }
 }
@@ -53,7 +53,8 @@ void moveCamera() {
     if (icn->y() < (-160 / 4)) {
       cameraY -= LEVEL_SPEED;
       // targetCameraY = cameraY;
-    } else if (icn->y() > (160 / 4)) {
+    }
+    else if (icn->y() > (160 / 4)) {
       cameraY += LEVEL_SPEED;
       // targetCameraY = cameraY;
     }
@@ -76,7 +77,6 @@ int main() {
 
   while (true) {
     if (loadNextPart && makeLevelList[partToLoad] != NULL) {
-      BN_LOG("Loading part ", partToLoad + 1);
       makeLevelList[partToLoad]();
       partToLoad++;
       loadNextPart = false;

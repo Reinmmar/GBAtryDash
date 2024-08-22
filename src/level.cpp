@@ -5,12 +5,49 @@
 bn::vector<LevelData*, 100> loadedData;
 bn::vector<LevelData*, 16> hitboxData;
 
+
+LevelData::LevelData(int obj, bn::fixed xp, bn::fixed yp, bn::fixed r, bool fx, bool fy, int u, int ri, int d, int l) :
+  id(obj),
+  x(xp + 5), y(yp),
+  flipX(fx), flipY(fy),
+  up(u), right(ri), down(d), left(l) {
+  if (r > 360) r -= 360;
+  else if (r < 0) r += 360;
+  rot = r;
+
+  switch (obj) {
+    case  BLOCK:
+    case DETAILED_BLOCK_PILLAR:
+    case DETAILED_BLOCK_PILLAR_TRIPLE:
+    case DETAILED_BLOCK_PILLAR_TRIPLE_ROTATED:
+    case DETAILED_BLOCK_SIDE:
+    case DETAILED_BLOCK_CORNER:
+    case DETAILED_BLOCK_CORNER_INVERTED:
+    case DETAILED_BLOCK_CENTER:
+    case DETAILED_BLOCK_END:
+    case HALF_BLOCK:
+      type = SOLID;
+      break;
+    case SPIKE:
+    case SPIKE_SHORT:
+    case GROUND_SPIKES:
+      type = KILL;
+      break;
+    case SHIP_PORTAL:
+    case CUBE_PORTAL:
+      type = PORTAL;
+      break;
+    default:
+      type = NONE;
+      break;
+  }
+};
+
 void removeSprite(int& index) {
   if (index < 0) return;
   if (index >= data.size()) return;
 
   data.erase(data.begin() + index);
-  BN_LOG("Erased: ", &data[index]);
 
   index -= 1;
 }
@@ -64,107 +101,79 @@ void readLevelData() {
 
     switch (object->id) {
       case BLOCK:
-        object->sprite =
-          bn::sprite_items::block.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::block.create_sprite(gridX, gridY);
         break;
       case DETAILED_BLOCK_PILLAR:
         if (object->rot == 90 || object->rot == 270) {
-          object->sprite =
-            bn::sprite_items::detailed_block_pillar_rotated.create_sprite(
-              gridX, gridY);
+          object->sprite = bn::sprite_items::detailed_block_pillar_rotated.create_sprite(gridX, gridY);
         }
         else
-          object->sprite =
-          bn::sprite_items::detailed_block_pillar.create_sprite(gridX, gridY);
+          object->sprite = bn::sprite_items::detailed_block_pillar.create_sprite(gridX, gridY);
         break;
       case DETAILED_BLOCK_PILLAR_TRIPLE:
-        object->sprite =
-          bn::sprite_items::detailed_block_pillar_triple.create_sprite(gridX,
-            gridY);
+        object->sprite = bn::sprite_items::detailed_block_pillar_triple.create_sprite(gridX, gridY);
         break;
       case DETAILED_BLOCK_PILLAR_TRIPLE_ROTATED:
-        object->sprite =
-          bn::sprite_items::detailed_block_pillar_triple_rotated.create_sprite(
-            gridX, gridY);
+        object->sprite = bn::sprite_items::detailed_block_pillar_triple_rotated.create_sprite(gridX, gridY);
         break;
       case DETAILED_BLOCK_SIDE:
         if (object->rot == 90 || object->rot == 270) {
           if (object->rot == 90)
             object->flipX = true;
-          object->sprite =
-            bn::sprite_items::detailed_block_side_rotated.create_sprite(gridX,
-              gridY);
+          object->sprite = bn::sprite_items::detailed_block_side_rotated.create_sprite(gridX, gridY);
         }
         else
-          object->sprite =
-          bn::sprite_items::detailed_block_side.create_sprite(gridX, gridY);
+          object->sprite = bn::sprite_items::detailed_block_side.create_sprite(gridX, gridY);
         break;
       case DETAILED_BLOCK_END:
         if (object->rot == 90 || object->rot == 270) {
           if (object->rot == 90)
             object->flipX = true;
-          object->sprite =
-            bn::sprite_items::detailed_block_end_rotated.create_sprite(gridX,
-              gridY);
+          object->sprite = bn::sprite_items::detailed_block_end_rotated.create_sprite(gridX, gridY);
         }
         else
-          object->sprite =
-          bn::sprite_items::detailed_block_end.create_sprite(gridX, gridY);
+          object->sprite = bn::sprite_items::detailed_block_end.create_sprite(gridX, gridY);
         break;
       case DETAILED_BLOCK_CORNER:
-        object->sprite =
-          bn::sprite_items::detailed_block_corner.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::detailed_block_corner.create_sprite(gridX, gridY);
         break;
       case DETAILED_BLOCK_CORNER_INVERTED:
-        object->sprite =
-          bn::sprite_items::detailed_block_corner_inverted.create_sprite(gridX,
-            gridY);
+        object->sprite = bn::sprite_items::detailed_block_corner_inverted.create_sprite(gridX, gridY);
         break;
       case DETAILED_BLOCK_CENTER:
-        object->sprite =
-          bn::sprite_items::detailed_block_center.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::detailed_block_center.create_sprite(gridX, gridY);
         break;
       case HALF_BLOCK:
-        object->sprite =
-          bn::sprite_items::half_block.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::half_block.create_sprite(gridX, gridY);
         break;
       case SPIKE:
-        object->sprite =
-          bn::sprite_items::spike.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::spike.create_sprite(gridX, gridY);
         break;
       case SPIKE_SHORT:
-        object->sprite =
-          bn::sprite_items::spike_short.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::spike_short.create_sprite(gridX, gridY);
         break;
       case GROUND_SPIKES:
-        object->sprite =
-          bn::sprite_items::groundspikes.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::groundspikes.create_sprite(gridX, gridY);
         break;
       case DECO_STICK_LARGE:
-        object->sprite =
-          bn::sprite_items::deco_stick_large.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::deco_stick_large.create_sprite(gridX, gridY);
         break;
       case DECO_STICK:
-        object->sprite =
-          bn::sprite_items::deco_stick.create_sprite(gridX, gridY);
-        object->sprite->set_rotation_angle(360 - object->rot);
+        object->sprite = bn::sprite_items::deco_stick.create_sprite(gridX, gridY);
+        object->sprite->set_rotation_angle(object->rot);
         break;
       case NORMAL_FACE:
-        object->sprite =
-          bn::sprite_items::normal_face.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::normal_face.create_sprite(gridX, gridY);
         break;
       case SPIKE_DECO:
-        object->sprite =
-          bn::sprite_items::spike_deco.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::spike_deco.create_sprite(gridX, gridY);
         object->sprite->set_z_order(1);
         break;
       case SHIP_PORTAL:
-        object->sprite =
-          bn::sprite_items::ship_portal.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::ship_portal.create_sprite(gridX, gridY);
         break;
       case CUBE_PORTAL:
-        object->sprite =
-          bn::sprite_items::cube_portal.create_sprite(gridX, gridY);
+        object->sprite = bn::sprite_items::cube_portal.create_sprite(gridX, gridY);
         break;
       default:
         break;
@@ -177,82 +186,39 @@ void readLevelData() {
 }
 
 bool dieCheck() {
-  bn::fixed solidRight = icn->x() + 3;
-  bn::fixed solidLeft = icn->x() - 3;
-  bn::fixed solidDown = icn->y() + 3;
-  bn::fixed solidUp = icn->y() - 3;
+  const bn::fixed solidRight = icn->x() + 3;
+  const bn::fixed solidLeft = icn->x() - 3;
+  const bn::fixed solidDown = icn->y() + 3 + cameraY;
+  const bn::fixed solidUp = icn->y() - 3 + cameraY;
   for (int i = 0; i < loadedData.size(); i++) {
-    bn::fixed objX = getObjX(*loadedData[i]);
-    bn::fixed objY = getObjY(*loadedData[i]);
-    bn::fixed iconTop = icn->y() - 8 - vy + cameraY;
-    bn::fixed iconBottom = icn->y() + 8 - vy + cameraY;
-    bn::fixed iconLeft = icn->x() - 8 + 2.75;
-    bn::fixed iconRight = icn->x() + 8 + 2.75;
-    switch (loadedData[i]->id) {
-      case SHIP_PORTAL:
-        if (iconTop <= objY + 16 && iconBottom >= objY - 16 &&
-          iconRight >= objX - 10 && iconLeft <= objX + 8)
-          gameMode = SHIP;
+    const bn::fixed objX = getObjX(*loadedData[i]);
+    const bn::fixed objY = getObjY(*loadedData[i]);
+    const bn::fixed iconTop = icn->y() - 8 + cameraY;
+    const bn::fixed iconBottom = icn->y() + 8 + cameraY;
+    const bn::fixed iconLeft = icn->x() - 8;
+    const bn::fixed iconRight = icn->x() + 8;
+
+
+    const bn::fixed objUp = objY - loadedData[i]->up;
+    const bn::fixed objLeft = objX - loadedData[i]->left;
+    const bn::fixed objRight = objX + loadedData[i]->right;
+    const bn::fixed objDown = objY + loadedData[i]->down;
+
+    if (objLeft == 0 && objRight == 0 && objUp == 0 && objDown == 0)
+      continue;
+
+    switch (loadedData[i]->type) {
+      case SOLID:
+        if (solidRight >= objLeft && solidLeft <= objRight && solidDown >= objUp && solidUp <= objDown)
+          return true;
         break;
-      case CUBE_PORTAL:
-        if (iconTop <= objY + 16 && iconBottom >= objY - 16 &&
-          iconRight >= objX - 10 && iconLeft <= objX + 8)
-          gameMode = CUBE;
+      case KILL:
+        if (iconRight >= objLeft && iconLeft <= objRight && iconBottom >= objUp && iconTop <= objDown)
+          return true;
         break;
-      default:
-        break;
-    }
-    switch (loadedData[i]->id) {
-      case BLOCK:
-      case DETAILED_BLOCK_PILLAR:
-      case DETAILED_BLOCK_SIDE:
-      case DETAILED_BLOCK_CORNER:
-      case DETAILED_BLOCK_CORNER_INVERTED:
-      case DETAILED_BLOCK_END:
-        if (solidRight >= objX - 8 && solidLeft <= objX + 8) {
-          if (solidDown + cameraY >= objY - 8 && solidUp + cameraY <= objY + 8)
-            return true;
-        }
-        break;
-      case HALF_BLOCK:
-        if (solidRight >= objX - 8 && solidLeft <= objX + 8) {
-          if (solidDown + cameraY >= objY - 8 && solidUp + cameraY <= objY)
-            return true;
-        }
-        break;
-      case DETAILED_BLOCK_PILLAR_TRIPLE:
-        if (solidRight >= objX - 8 && solidLeft <= objX + 8) {
-          if (solidDown + cameraY >= objY - 8 - 16 &&
-            solidUp + cameraY <= objY + 8 + 16)
-            return true;
-        }
-        break;
-      case DETAILED_BLOCK_PILLAR_TRIPLE_ROTATED:
-        if (solidRight >= objX - 8 - 16 && solidLeft <= objX + 8 + 16) {
-          if (solidDown + cameraY >= objY - 8 && solidUp + cameraY <= objY + 8)
-            return true;
-        }
-        break;
-      case SPIKE:
-        if (icn->x() + 8 >= objX - 2 && icn->x() - 8 <= objX + 2) {
-          if (icn->y() + 8 + cameraY >= objY - 3 &&
-            icn->y() - 8 + cameraY <= objY + 4)
-            return true;
-        }
-        break;
-      case SPIKE_SHORT:
-        if (icn->x() + 8 >= objX - 2 && icn->x() - 8 <= objX + 2) {
-          if (icn->y() + 8 + cameraY >= objY + 2 &&
-            icn->y() - 8 + cameraY <= objY + 5)
-            return true;
-        }
-        break;
-      case GROUND_SPIKES:
-        if (icn->x() + 8 >= objX - 2 && icn->x() - 8 <= objX + 2) {
-          if (icn->y() + 8 + cameraY >= objY + 4 &&
-            icn->y() - 8 + cameraY <= objY + 9)
-            return true;
-        }
+      case PORTAL:
+        if (iconTop <= objDown && iconBottom >= objUp && iconRight >= objLeft && iconLeft <= objRight)
+          gameMode = loadedData[i]->id - CUBE_PORTAL;
         break;
       default:
         break;
