@@ -1,22 +1,27 @@
 #include "includes.h"
 
+enum Types {
+  NONE,
+  SOLID,
+  KILL,
+  PORTAL
+};
+
 class LevelData {
-  public:
-    int id;
-    bn::fixed x;
-    bn::fixed y;
-    bn::fixed rot;
-    bool flipX;
-    bool flipY;
-    int width;
-    int height;
-    bn::optional<bn::sprite_ptr> sprite;
-    LevelData(int idlol, bn::fixed xp, bn::fixed yp, bn::fixed r, bool fx, bool fy) :
-    id(idlol), x(xp + 5), y(yp), flipX(fx), flipY(fy) {
-      if (r > 360) r -= 360;
-      else if (r < 360) r += 360;
-      rot = r;
-    };
+public:
+  int id;
+  bn::fixed x;
+  bn::fixed y;
+  bn::fixed rot;
+  bool flipX;
+  bool flipY;
+  int type;
+  int up;
+  int right;
+  int down;
+  int left;
+  bn::optional<bn::sprite_ptr> sprite;
+  LevelData(int obj, bn::fixed xp, bn::fixed yp, bn::fixed r, bool fx, bool fy, int u, int ri, int d, int l);
 };
 
 extern bn::vector<LevelData, 200> data;
@@ -29,7 +34,7 @@ typedef void (*FunctionArray) ();
 extern FunctionArray makeLevelList[];
 
 void placeObject(int, bn::fixed, bn::fixed, bool = false, bool = false,
-                 int = 0);
+  int = 0);
 bn::fixed getObjX(LevelData);
 bn::fixed getObjY(LevelData);
 
@@ -51,6 +56,6 @@ typedef enum {
   DECO_STICK_LARGE,
   DECO_STICK,
   NORMAL_FACE,
-  SHIP_PORTAL,
   CUBE_PORTAL,
+  SHIP_PORTAL,
 } Objects;
