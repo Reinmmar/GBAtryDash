@@ -76,6 +76,7 @@ int main() {
 
   while (true) {
     if (loadNextPart && makeLevelList[partToLoad] != NULL) {
+      BN_LOG("Loading part ", partToLoad + 1);
       makeLevelList[partToLoad]();
       partToLoad++;
       loadNextPart = false;
@@ -101,7 +102,7 @@ int main() {
     handleLand();
 
     rotateIcon();
-    if (dieCheck() && false) {
+    if (dieCheck()) {
       icn->set_visible(false);
       bn::music::stop();
       bn::sound_items::explode_11.play();
